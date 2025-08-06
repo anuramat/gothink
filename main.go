@@ -13,21 +13,21 @@ import (
 )
 
 type ThoughtData struct {
-	Thought            string  `json:"thought"`
-	ThoughtNumber      int     `json:"thoughtNumber"`
-	TotalThoughts      int     `json:"totalThoughts"`
-	NextThoughtNeeded  bool    `json:"nextThoughtNeeded"`
-	IsRevision         *bool   `json:"isRevision,omitempty"`
-	RevisesThought     *int    `json:"revisesThought,omitempty"`
-	BranchFromThought  *int    `json:"branchFromThought,omitempty"`
-	BranchId           *string `json:"branchId,omitempty"`
-	NeedsMoreThoughts  *bool   `json:"needsMoreThoughts,omitempty"`
+	Thought           string  `json:"thought"`
+	ThoughtNumber     int     `json:"thoughtNumber"`
+	TotalThoughts     int     `json:"totalThoughts"`
+	NextThoughtNeeded bool    `json:"nextThoughtNeeded"`
+	IsRevision        *bool   `json:"isRevision,omitempty"`
+	RevisesThought    *int    `json:"revisesThought,omitempty"`
+	BranchFromThought *int    `json:"branchFromThought,omitempty"`
+	BranchId          *string `json:"branchId,omitempty"`
+	NeedsMoreThoughts *bool   `json:"needsMoreThoughts,omitempty"`
 }
 
 type SequentialThinkingServer struct {
-	thoughtHistory         []ThoughtData
-	branches               map[string][]ThoughtData
-	disableThoughtLogging  bool
+	thoughtHistory        []ThoughtData
+	branches              map[string][]ThoughtData
+	disableThoughtLogging bool
 }
 
 func NewSequentialThinkingServer() *SequentialThinkingServer {
@@ -40,7 +40,7 @@ func NewSequentialThinkingServer() *SequentialThinkingServer {
 
 func (s *SequentialThinkingServer) validateThoughtData(args map[string]any) (*ThoughtData, error) {
 	data := &ThoughtData{}
-	
+
 	thought, ok := args["thought"].(string)
 	if !ok || thought == "" {
 		return nil, fmt.Errorf("invalid thought: must be a string")
@@ -122,7 +122,7 @@ func (s *SequentialThinkingServer) formatThought(data *ThoughtData) string {
 	}
 
 	header := fmt.Sprintf("%s %d/%d%s", prefix, data.ThoughtNumber, data.TotalThoughts, context)
-	border := strings.Repeat("─", maxLen(len(header), len(data.Thought)) + 4)
+	border := strings.Repeat("─", maxLen(len(header), len(data.Thought))+4)
 
 	return fmt.Sprintf("\n┌%s┐\n│ %s │\n├%s┤\n│ %-*s │\n└%s┘",
 		border, header, border, len(border)-2, data.Thought, border)
@@ -137,7 +137,7 @@ func maxLen(a, b int) int {
 
 func (s *SequentialThinkingServer) processThought(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := request.GetArguments()
-	
+
 	validatedInput, err := s.validateThoughtData(args)
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
@@ -168,10 +168,10 @@ func (s *SequentialThinkingServer) processThought(ctx context.Context, request m
 	}
 
 	result := map[string]any{
-		"thoughtNumber":       validatedInput.ThoughtNumber,
-		"totalThoughts":       validatedInput.TotalThoughts,
-		"nextThoughtNeeded":   validatedInput.NextThoughtNeeded,
-		"branches":            branches,
+		"thoughtNumber":        validatedInput.ThoughtNumber,
+		"totalThoughts":        validatedInput.TotalThoughts,
+		"nextThoughtNeeded":    validatedInput.NextThoughtNeeded,
+		"branches":             branches,
 		"thoughtHistoryLength": len(s.thoughtHistory),
 	}
 
