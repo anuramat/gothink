@@ -23,6 +23,7 @@
           version = "0.1.0";
           src = ./.;
           vendorHash = "sha256-h4td20xNs2a5Hats8dIhzpZPHDc0/rxEIM98/f9XbHY=";
+          meta.mainProgram = "gothink";
         };
 
         apps.default = {
